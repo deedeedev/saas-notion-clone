@@ -11,6 +11,7 @@
     "pull": "drizzle-kit introspect:pg ",
     "generate": "drizzle-kit generate:pg",
     "drop": "drizzle-kit drop",
+    "migrate": "tsx src/lib/supabase/migration.ts",
     "check": "drizzle-kit check:pg",
     "up": "drizzle-kit up:pg",
     "types": "npx supabase gen types typescript --project-id $DATABASE_URL --schema public > src/lib/types.ts",
@@ -28,7 +29,8 @@
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.2.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.7.2"
   },
   "devDependencies": {
     "@types/node": "^20",
