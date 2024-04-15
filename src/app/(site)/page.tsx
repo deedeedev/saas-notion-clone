@@ -215,12 +215,12 @@ export default function HomePage() {
           </p>
         </div>
         <div className="flex flex-col justify-between space-y-12 sm:flex-row sm:space-y-0">
-          {FOOTER_COLUMNS.map((column) => (
-            <div className="flex flex-col justify-end">
+          {FOOTER_COLUMNS.map((column, i) => (
+            <div className="flex flex-col justify-end" key={i}>
               <h2 className="mb-8 text-2xl font-bold">{column.title}</h2>
               <ul className="space-y-8">
-                {column.links.map((link) => (
-                  <li>
+                {column.links.map((link, i) => (
+                  <li key={i}>
                     <Link href="#">{link}</Link>
                   </li>
                 ))}
