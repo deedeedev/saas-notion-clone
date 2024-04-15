@@ -5,7 +5,7 @@ import { z } from "zod"
 
 export type TYPE_PRICING_PLANS = "Free Plan" | "Pro Plan"
 
-export const LoginFormSchema = z.object({
+export const FormSchema = z.object({
   email: z.string().describe("Email").email({
     message: "Invalid Email",
   }),
