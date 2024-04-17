@@ -32,10 +32,14 @@ export async function actionLoginUser({
   }
 }
 
-export async function actionSignUpUser({
-  email,
-  password,
-}: z.infer<typeof SignUpFormSchema>) {
+export async function actionSignUpUser(
+  userData: Omit<
+    z.infer<typeof SignUpFormSchema>,
+    "accepted" | "confirmPassword"
+  >,
+) {
+  const { email, password } = userData
+
   const supabase = supabaseServerClient()
 
   const { data } = await supabase
@@ -52,6 +56,7 @@ export async function actionSignUpUser({
       options: {
         emailRedirectTo:
           process.env.NEXT_PUBLIC_SITE_URL + "/api/auth/callback",
+        data: userData,
       },
     })
 

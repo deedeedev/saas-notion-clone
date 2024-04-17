@@ -14,10 +14,13 @@ import {
   FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 import logoImg from "../../../../public/cypresslogo.svg"
 import googleImg from "../../../../public/google.png"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -28,6 +31,12 @@ import clsx from "clsx"
 
 export const SignUpFormSchema = z
   .object({
+    fullName: z
+      .string()
+      .describe("Full Name")
+      .max(30, "Name must be less than 30 characters")
+      .regex(new RegExp("^[a-zA-Z0-9_-]*$"), "No special characters allowed!")
+      .optional(),
     email: z.string().describe("Email").email({
       message: "Invalid Email",
     }),
@@ -39,6 +48,9 @@ export const SignUpFormSchema = z
       .string()
       .describe("Confirm Password")
       .min(6, "Password must be minimum 6 characters"),
+    accepted: z.literal(true, {
+      errorMap: () => ({ message: "Please accept all terms" }),
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -70,7 +82,12 @@ export default function SignUpPage() {
   const form = useForm<z.infer<typeof SignUpFormSchema>>({
     mode: "onChange",
     resolver: zodResolver(SignUpFormSchema),
-    defaultValues: { email: "", password: "", confirmPassword: "" },
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   })
 
   const isLoading = form.formState.isSubmitting
@@ -78,8 +95,9 @@ export default function SignUpPage() {
   const onSubmit: SubmitHandler<z.infer<typeof SignUpFormSchema>> = async (
     formData,
   ) => {
-    console.log("BBBBB")
-    const { error } = await actionSignUpUser(formData)
+    const { confirmPassword, accepted, ...user } = formData
+
+    const { error } = await actionSignUpUser(user)
 
     if (error) {
       form.reset()
@@ -118,6 +136,23 @@ export default function SignUpPage() {
           <>
             <FormField
               control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Full Name"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
@@ -147,6 +182,38 @@ export default function SignUpPage() {
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Confirm Password"
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accepted"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel>Accept Terms and Conditions</FormLabel>
                 </FormItem>
               )}
             />
