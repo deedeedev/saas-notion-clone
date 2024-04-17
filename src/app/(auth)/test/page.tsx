@@ -79,16 +79,16 @@ export default function SignUpPage() {
     formData,
   ) => {
     console.log("BBBBB")
-    const { error } = await actionSignUpUser(formData)
+    // const { error } = await actionSignUpUser(formData)
 
-    if (error) {
-      form.reset()
-      setSubmitError(error)
-    } else {
-      setConfirmation(true)
-    }
+    // if (error) {
+    //   form.reset()
+    //   setSubmitError(error)
+    // } else {
+    //   setConfirmation(true)
+    // }
 
-    router.refresh()
+    // router.refresh()
   }
 
   const signUpHandler = (event: React.MouseEvent) => {
@@ -114,92 +114,49 @@ export default function SignUpPage() {
         <FormDescription className=" text-foreground/60">
           An all-In-One Collaboration and Productivity Platform
         </FormDescription>
-        {!confirmation && !codeExchangeError && (
-          <>
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Email"
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Password"
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              className="w-full p-6"
-              size="lg"
-              disabled={isLoading}
-            >
-              {!isLoading ? "Create Account" : <Loader />}
-            </Button>
-            {submitError && <FormMessage>{submitError}</FormMessage>}
-            <span className="self-center">
-              Already have an account?{" "}
-              <Link href="/login" className="text-primary">
-                Login
-              </Link>
-            </span>
-            <hr className="border-1 border-muted-foreground/30"></hr>
-            {/* WIP */}
-            <Button
-              type="button"
-              className="relative w-full p-6"
-              onClick={signUpHandler}
-              size="lg"
-              variant="outline"
-            >
-              <Image src={googleImg} alt="" className="mr-2 size-6" />
-              Sign up with Google
-            </Button>
-          </>
-        )}
-        {(confirmation || codeExchangeError) && (
-          <>
-            <Alert className={confirmationAndErrorStyles}>
-              {!codeExchangeError && <MailCheck className="h-4 w-4" />}
-              <AlertTitle className="">
-                {codeExchangeError ? "Invalid Link" : "Check your email."}
-              </AlertTitle>
-              <AlertDescription>
-                {codeExchangeError || "An email confirmation has been sent."}
-              </AlertDescription>
-            </Alert>
-            {codeExchangeError && (
-              <span className="self-center">
-                Try again?{" "}
-                <Link href="/signup" className="text-primary">
-                  Sign Up
-                </Link>
-              </span>
-            )}
-          </>
-        )}
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder="Email"
+                  disabled={isLoading}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  disabled={isLoading}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {submitError && <FormMessage>{submitError}</FormMessage>}
+        <Button
+          type="submit"
+          className="w-full p-6"
+          size="lg"
+          disabled={isLoading}
+        >
+          {!isLoading ? "Create Account" : <Loader />}
+        </Button>
       </form>
     </Form>
   )

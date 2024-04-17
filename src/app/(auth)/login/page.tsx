@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { FormSchema } from "@/lib/types"
 import type { SubmitHandler } from "react-hook-form"
 import googleImg from "../../../../public/google.png"
 import logoImg from "../../../../public/cypresslogo.svg"
@@ -17,6 +16,7 @@ import {
   FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -25,29 +25,35 @@ import Loader from "@/components/Loader"
 import { Separator } from "@/components/ui/separator"
 import { actionLoginUser } from "@/lib/serverActions"
 
+export const LoginFormSchema = z.object({
+  email: z.string().describe("Email").email({
+    message: "Invalid Email",
+  }),
+  password: z.string().describe("Password").min(1, "Password is required"),
+})
+
 export default function LoginPage() {
   const router = useRouter()
   const [submitError, setSubmitError] = useState("")
 
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<z.infer<typeof LoginFormSchema>>({
     mode: "onChange",
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    resolver: zodResolver(LoginFormSchema),
+    defaultValues: { email: "", password: "" },
   })
 
   const isLoading = form.formState.isSubmitting
 
-  const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (
+  const onSubmit: SubmitHandler<z.infer<typeof LoginFormSchema>> = async (
     formData,
   ) => {
     const { error } = await actionLoginUser(formData)
+
     if (error) {
       form.reset()
-      setSubmitError(error.message)
+      setSubmitError(error)
     }
+
     router.replace("/dashboard")
   }
 
@@ -70,26 +76,36 @@ export default function LoginPage() {
           An all-In-One Collaboration and Productivity Platform
         </FormDescription>
         <FormField
-          disabled={isLoading}
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Email" {...field} />
+                <Input
+                  type="email"
+                  placeholder="you@example.com"
+                  disabled={isLoading}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
-          disabled={isLoading}
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Password" {...field} />
+                <Input
+                  type="password"
+                  placeholder="password"
+                  disabled={isLoading}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
